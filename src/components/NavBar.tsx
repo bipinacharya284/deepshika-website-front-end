@@ -1,94 +1,53 @@
-import React from "react";
-import {
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-  NavbarMenuToggle,
-  NavbarMenu,
-  NavbarMenuItem,
-  Link,
-  Button,
-} from "@nextui-org/react";
+import * as React from "react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 
-export default function Nav() {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+const MenuItems = ({ children, isActive }: any) => (
+  <Text
+    mt={{ base: 4, md: 0 }}
+    mr={6}
+    display="block"
+    bg={isActive ? "blue.500" : "transparent"}
+  >
+    {children}
+  </Text>
+);
 
-  const menuItems = [
-    "Profile",
-    "Dashboard",
-    "Activity",
-    "Analytics",
-    "System",
-    "Deployments",
-    "My Settings",
-    "Team Settings",
-    "Help & Feedback",
-    "Log Out",
-  ];
+export default function Navbar() {
+  const [activeItem, setActiveItem] = React.useState("Home");
 
   return (
-    <Navbar
-      onMenuOpenChange={setIsMenuOpen}
-      style={{ backgroundColor: "var(--nextui-colors-primary)" }}
+    <Flex
+      as="nav"
+      align="center"
+      justify="space-between"
+      wrap="wrap"
+      padding="1.5rem"
+      bg="#12203F"
+      color="white"
     >
-      <NavbarContent>
-        <NavbarMenuToggle
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          className="sm:hidden"
-        />
-        <NavbarBrand>
-          <p className="font-bold text-inherit">ACME</p>
-        </NavbarBrand>
-      </NavbarContent>
+      <Flex gap="2" align="center" mr={5}>
+        <Text fontSize="lg" fontWeight="bold">
+          Logo
+        </Text>
+      </Flex>
 
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            Features
-          </Link>
-        </NavbarItem>
-        <NavbarItem isActive>
-          <Link href="#" aria-current="page">
-            Customers
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            Integrations
-          </Link>
-        </NavbarItem>
-      </NavbarContent>
-      <NavbarContent justify="end">
-        <NavbarItem className="hidden lg:flex">
-          <Link href="#">Login</Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Button as={Link} color="primary" href="#" variant="flat">
-            Sign Up
-          </Button>
-        </NavbarItem>
-      </NavbarContent>
-      <NavbarMenu>
-        {menuItems.map((item, index) => (
-          <NavbarMenuItem key={`${item}-${index}`}>
-            <Link
-              color={
-                index === 2
-                  ? "primary"
-                  : index === menuItems.length - 1
-                  ? "danger"
-                  : "foreground"
-              }
-              className="w-full"
-              href="#"
-              size="lg"
-            >
-              {item}
-            </Link>
-          </NavbarMenuItem>
+      <Box
+        gap="2"
+        display={{ base: "block", md: "flex" }}
+        width={{ base: "full", md: "auto" }}
+        alignItems="center"
+        flexGrow={1}
+      >
+        {["Home", "About", "Contact"].map((item) => (
+          <MenuItems
+            key={item}
+            isActive={activeItem === item}
+            onClick={() => setActiveItem(item)}
+          >
+            {item}
+          </MenuItems>
         ))}
-      </NavbarMenu>
-    </Navbar>
+      </Box>
+    </Flex>
   );
 }
