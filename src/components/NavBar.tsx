@@ -1,53 +1,69 @@
-import * as React from "react";
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Image, Spacer, useBreakpointValue } from "@chakra-ui/react";
+import { Link, useLocation } from "react-router-dom";
 
-const MenuItems = ({ children, isActive }: any) => (
-  <Text
-    mt={{ base: 4, md: 0 }}
-    mr={6}
-    display="block"
-    bg={isActive ? "blue.500" : "transparent"}
-  >
-    {children}
-  </Text>
-);
+interface NavItems {
+  navLink: string;
+  menuName: string;
+}
 
-export default function Navbar() {
-  const [activeItem, setActiveItem] = React.useState("Home");
+interface NavData {
+  navs: NavItems[];
+}
+
+const colorCodeInActive = "#12203F";
+const colorCodeActive = "#09276A";
+
+const Navbar = ({ navs }: NavData) => {
+  const location = useLocation();
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   return (
-    <Flex
-      as="nav"
-      align="center"
-      justify="space-between"
-      wrap="wrap"
-      padding="1.5rem"
-      bg="#12203F"
-      color="white"
-    >
-      <Flex gap="2" align="center" mr={5}>
-        <Text fontSize="lg" fontWeight="bold">
-          Logo
-        </Text>
+    <Box bg={colorCodeInActive} px={4}>
+      <Flex direction={isMobile ? "column" : "row"} align="center" wrap="wrap">
+        {/* Logo */}
+        <Flex
+          justifyContent={isMobile ? "center" : "flex-start"}
+          width={isMobile ? "100%" : "auto"}
+        >
+          <Link to="/">
+            <Image p={2} src="/react.svg" boxSize="80px" alt="Logo" />
+          </Link>
+        </Flex>
+        {/* Menu */}
+        <Spacer />
+        <Flex
+          justifyContent={isMobile ? "center" : "flex-end"}
+          alignItems={"center"}
+          direction="row"
+          wrap="nowrap"
+          width={isMobile ? "100%" : "auto"}
+        >
+          {navs.map((nav: NavItems) => (
+            <div key={nav.menuName}>
+              <Link to={nav.navLink}>
+                <Box
+                  as="button"
+                  color="white"
+                  fontSize="xl"
+                  w="100%"
+                  bg={
+                    location.pathname === nav.navLink
+                      ? colorCodeActive
+                      : colorCodeInActive
+                  }
+                  ml={isMobile ? 0 : 10}
+                  h="100%"
+                  p={4}
+                >
+                  {nav.menuName}
+                </Box>
+              </Link>
+            </div>
+          ))}
+        </Flex>
       </Flex>
-
-      <Box
-        gap="2"
-        display={{ base: "block", md: "flex" }}
-        width={{ base: "full", md: "auto" }}
-        alignItems="center"
-        flexGrow={1}
-      >
-        {["Home", "About", "Contact"].map((item) => (
-          <MenuItems
-            key={item}
-            isActive={activeItem === item}
-            onClick={() => setActiveItem(item)}
-          >
-            {item}
-          </MenuItems>
-        ))}
-      </Box>
-    </Flex>
+    </Box>
   );
-}
+};
+
+export default Navbar;
